@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>83968FFB-D521-45F4-97DF-A1A825F7D613</string>
+	<key>IDESourceControlProjectName</key>
+	<string>TextViewer</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>DECFCEB31785C68941B93F9D1384E3E9CFF6FA33</key>
+		<string>https://bitbucket.org/nntam1407/textviewer.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>TextViewer/TextViewer.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>DECFCEB31785C68941B93F9D1384E3E9CFF6FA33</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://bitbucket.org/nntam1407/textviewer.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>DECFCEB31785C68941B93F9D1384E3E9CFF6FA33</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>DECFCEB31785C68941B93F9D1384E3E9CFF6FA33</string>
+			<key>IDESourceControlWCCName</key>
+			<string>TextViewer</string>
+		</dict>
+	</array>
+</dict>
+</plist>

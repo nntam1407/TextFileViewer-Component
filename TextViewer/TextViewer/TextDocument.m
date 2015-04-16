@@ -14,7 +14,7 @@
  PRIVATE MACRO
  =============================================================================*/
 
-#define kBufferSize         8192
+#define kBufferSize         49152//8192
 
 /*============================================================================
  PRIVATE INTERFACE
@@ -70,33 +70,34 @@
     UIFont *font = [UIFont systemFontOfSize:13];
     NSDictionary *attributes = @{NSFontAttributeName: font};
     
-    NSInputStream *inputStream = [[NSInputStream alloc] initWithFileAtPath:self.filePath];
-    [inputStream open];
+    NSData *fileData = [NSData dataWithContentsOfFile:self.filePath options:NSDataReadingMappedIfSafe error:nil];
+    int dataLength = [fileData length];
     
     // Read data and calculator page count
     NSUInteger readPointer = 0;
-    NSUInteger readByteCount = 0;
-    
-    do {
+
+    while (readPointer < dataLength) {
         @autoreleasepool {
-            NSMutableData *data = [NSMutableData dataWithLength:kBufferSize];
+            int remainByteCount = dataLength - readPointer;
+            int byteToRead = kBufferSize < remainByteCount ? kBufferSize : remainByteCount;
+            uint8_t* data = malloc(byteToRead);
             
-            readByteCount = [inputStream read:data.mutableBytes maxLength:kBufferSize];
+            [fileData getBytes:data range:NSMakeRange(readPointer, byteToRead)];
             
             // Convert to NSString data
-            NSString *text = [[NSString alloc] initWithBytes:data.bytes length:readByteCount encoding:NSUTF8StringEncoding];
+            NSString *text = [[NSString alloc] initWithBytes:data length:byteToRead encoding:NSUTF8StringEncoding];
             
             if (text) {
                 CGSize size = [text boundingRectWithSize:limmitSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil].size;
                 totalHeight += size.height;
             }
             
+            free(data);
+            
             // Update read point
-            readPointer += readByteCount;
+            readPointer += byteToRead;
         }
-    } while (readByteCount > 0);
-    
-    [inputStream close];
+    }
     
     return (int)(totalHeight / boundSize.height);
 }
