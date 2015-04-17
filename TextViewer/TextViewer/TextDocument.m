@@ -14,13 +14,15 @@
  PRIVATE MACRO
  =============================================================================*/
 
-#define kBufferSize         49152//8192
+#define kBufferSize         8192//8192
 
 /*============================================================================
  PRIVATE INTERFACE
  =============================================================================*/
 
 @interface TextDocument()
+
+@property (strong, nonatomic) NSData *fileData; // Only map on memory, not read all file to memory
 
 @end
 
@@ -30,22 +32,24 @@
     self = [super init];
     
     if (self) {
+        _blockSize = kBufferSize;
         _filePath = filePath;
-        _pageNumber = 0;
         
-        // Calculator page count
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-            NSDate *startTime = [NSDate date];
-            
-            int pageCount = [self calculatePageCountWithBoundSize:CGSizeMake(320, 568)];
-            
-            NSDate *endTime = [NSDate date];
-            
-            NSLog(@"Result page count = %d, time = %f seconds", pageCount, [endTime timeIntervalSinceDate:startTime]);
-        });
+        NSError *error = nil;
+        _fileData = [NSData dataWithContentsOfFile:self.filePath options:NSDataReadingMappedIfSafe error:&error];
+        
+        if (!error) {
+            _fileSize = [self.fileData length];
+        } else {
+            _fileData = nil;
+        }
     }
     
     return self;
+}
+
+- (void)dealloc {
+    _fileData = nil;
 }
 
 #pragma mark - Override methods
@@ -56,6 +60,16 @@
     } else {
         return ![[NSFileManager defaultManager] fileExistsAtPath:self.filePath];
     }
+}
+
+- (NSUInteger)blockNumbers {
+    NSUInteger blocks = self.fileSize / self.blockSize;
+    
+    if (self.fileSize % self.blockSize > 0) {
+        blocks += 1;
+    }
+    
+    return blocks;
 }
 
 #pragma mark - Private methods
@@ -71,15 +85,15 @@
     NSDictionary *attributes = @{NSFontAttributeName: font};
     
     NSData *fileData = [NSData dataWithContentsOfFile:self.filePath options:NSDataReadingMappedIfSafe error:nil];
-    int dataLength = [fileData length];
+    NSUInteger dataLength = [fileData length];
     
     // Read data and calculator page count
     NSUInteger readPointer = 0;
 
     while (readPointer < dataLength) {
         @autoreleasepool {
-            int remainByteCount = dataLength - readPointer;
-            int byteToRead = kBufferSize < remainByteCount ? kBufferSize : remainByteCount;
+            NSUInteger remainByteCount = dataLength - readPointer;
+            NSUInteger byteToRead = kBufferSize < remainByteCount ? kBufferSize : remainByteCount;
             uint8_t* data = malloc(byteToRead);
             
             [fileData getBytes:data range:NSMakeRange(readPointer, byteToRead)];
@@ -100,6 +114,30 @@
     }
     
     return (int)(totalHeight / boundSize.height);
+}
+
+#pragma mark - Methods
+
+- (NSString *)readTextAtBlockIndex:(NSUInteger)blockIndex {
+    if (blockIndex >= self.blockNumbers || !self.fileData) {
+        return nil;
+    }
+    
+    // Read data from file at block index
+    NSRange rangeToRead = NSMakeRange(blockIndex * self.blockSize, self.blockSize);
+    
+    if (rangeToRead.location + rangeToRead.length > self.fileSize) {
+        rangeToRead.length = self.fileSize - rangeToRead.location;
+    }
+    
+    NSMutableData *data = [NSMutableData dataWithCapacity:rangeToRead.length];
+    [self.fileData getBytes:data.mutableBytes range:rangeToRead];
+    
+    // Convert to NSString data
+    NSString *text = [[NSString alloc] initWithBytes:data.bytes length:rangeToRead.length encoding:NSUTF8StringEncoding];
+    
+    // Return text
+    return text;
 }
 
 @end

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1045896A1AE0C09600A1D251 /* TextFileView.m in Sources */ = {isa = PBXBuildFile; fileRef = 104589691AE0C09600A1D251 /* TextFileView.m */; };
+		1045896D1AE0CE3600A1D251 /* TextBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 1045896C1AE0CE3600A1D251 /* TextBlock.m */; };
+		10F1B2FE1AE0EEBF003B1B13 /* TextFileScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 10F1B2FD1AE0EEBF003B1B13 /* TextFileScrollView.m */; };
+		10F1B3001AE0F84F003B1B13 /* test.txt in Resources */ = {isa = PBXBuildFile; fileRef = 10F1B2FF1AE0F84F003B1B13 /* test.txt */; };
 		10F9DA331ADF92C600F73F7A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 10F9DA321ADF92C600F73F7A /* main.m */; };
 		10F9DA361ADF92C600F73F7A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 10F9DA351ADF92C600F73F7A /* AppDelegate.m */; };
 		10F9DA391ADF92C600F73F7A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 10F9DA381ADF92C600F73F7A /* ViewController.m */; };
@@ -29,6 +33,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		104589681AE0C09600A1D251 /* TextFileView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextFileView.h; sourceTree = "<group>"; };
+		104589691AE0C09600A1D251 /* TextFileView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextFileView.m; sourceTree = "<group>"; };
+		1045896B1AE0CE3600A1D251 /* TextBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextBlock.h; sourceTree = "<group>"; };
+		1045896C1AE0CE3600A1D251 /* TextBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextBlock.m; sourceTree = "<group>"; };
+		10F1B2FC1AE0EEBF003B1B13 /* TextFileScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextFileScrollView.h; sourceTree = "<group>"; };
+		10F1B2FD1AE0EEBF003B1B13 /* TextFileScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextFileScrollView.m; sourceTree = "<group>"; };
+		10F1B2FF1AE0F84F003B1B13 /* test.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.txt; sourceTree = "<group>"; };
 		10F9DA2D1ADF92C600F73F7A /* TextViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TextViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		10F9DA311ADF92C600F73F7A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		10F9DA321ADF92C600F73F7A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -87,6 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				10FC5D8D1ADFB9650022FAA6 /* log.txt */,
+				10F1B2FF1AE0F84F003B1B13 /* test.txt */,
 				10F9DA341ADF92C600F73F7A /* AppDelegate.h */,
 				10F9DA351ADF92C600F73F7A /* AppDelegate.m */,
 				10F9DA371ADF92C600F73F7A /* ViewController.h */,
@@ -97,6 +109,12 @@
 				10F9DA301ADF92C600F73F7A /* Supporting Files */,
 				10F9DA561ADF92F100F73F7A /* TextDocument.h */,
 				10F9DA571ADF92F100F73F7A /* TextDocument.m */,
+				1045896B1AE0CE3600A1D251 /* TextBlock.h */,
+				1045896C1AE0CE3600A1D251 /* TextBlock.m */,
+				104589681AE0C09600A1D251 /* TextFileView.h */,
+				104589691AE0C09600A1D251 /* TextFileView.m */,
+				10F1B2FC1AE0EEBF003B1B13 /* TextFileScrollView.h */,
+				10F1B2FD1AE0EEBF003B1B13 /* TextFileScrollView.m */,
 			);
 			path = TextViewer;
 			sourceTree = "<group>";
@@ -211,6 +229,7 @@
 				10F9DA411ADF92C600F73F7A /* LaunchScreen.xib in Resources */,
 				10F9DA3E1ADF92C600F73F7A /* Images.xcassets in Resources */,
 				10FC5D8E1ADFB9650022FAA6 /* log.txt in Resources */,
+				10F1B3001AE0F84F003B1B13 /* test.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -229,9 +248,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				10F9DA391ADF92C600F73F7A /* ViewController.m in Sources */,
+				1045896A1AE0C09600A1D251 /* TextFileView.m in Sources */,
 				10F9DA581ADF92F100F73F7A /* TextDocument.m in Sources */,
 				10F9DA361ADF92C600F73F7A /* AppDelegate.m in Sources */,
+				1045896D1AE0CE3600A1D251 /* TextBlock.m in Sources */,
 				10F9DA331ADF92C600F73F7A /* main.m in Sources */,
+				10F1B2FE1AE0EEBF003B1B13 /* TextFileScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

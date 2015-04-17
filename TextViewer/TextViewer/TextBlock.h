@@ -1,14 +1,13 @@
 /*============================================================================
  PROJECT: TextViewer
- FILE:    TextDocument.h
+ FILE:    TextBlock.h
  AUTHOR:  Tam Nguyen
- DATE:    4/16/15
+ DATE:    4/17/15
  =============================================================================*/
 
 /*============================================================================
  IMPORT
  =============================================================================*/
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
 /*============================================================================
@@ -20,20 +19,14 @@
  =============================================================================*/
 
 /*============================================================================
- Interface:   TextDocument
+ Interface:   TextBlock
  =============================================================================*/
 
 
-@interface TextDocument : NSObject
+@interface TextBlock : NSObject
 
-@property (readonly, nonatomic) NSString *filePath;
-@property (assign, nonatomic) NSUInteger blockSize; // Unit is byte. Default is kBufferSize
-
-@property (readonly, nonatomic) BOOL fileNotFound;
-@property (readonly, nonatomic) NSUInteger fileSize; // bytes
-@property (readonly, nonatomic) NSUInteger blockNumbers;
-
-- (instancetype)initWithFilePath:(NSString *)filePath;
-- (NSString *)readTextAtBlockIndex:(NSUInteger)blockIndex;
+@property (strong, nonatomic) NSString *text;
+@property (assign, nonatomic) CGRect displayRect;
+@property (assign, nonatomic) NSUInteger blockIndex;
 
 @end

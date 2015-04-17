@@ -1,16 +1,15 @@
 /*============================================================================
  PROJECT: TextViewer
- FILE:    TextDocument.h
+ FILE:    TextFileView.h
  AUTHOR:  Tam Nguyen
- DATE:    4/16/15
+ DATE:    4/17/15
  =============================================================================*/
 
 /*============================================================================
  IMPORT
  =============================================================================*/
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-
+#import "TextDocument.h"
 /*============================================================================
  MACRO
  =============================================================================*/
@@ -20,20 +19,11 @@
  =============================================================================*/
 
 /*============================================================================
- Interface:   TextDocument
+ Interface:   TextFileView
  =============================================================================*/
 
+@interface TextFileView : UITextView
 
-@interface TextDocument : NSObject
-
-@property (readonly, nonatomic) NSString *filePath;
-@property (assign, nonatomic) NSUInteger blockSize; // Unit is byte. Default is kBufferSize
-
-@property (readonly, nonatomic) BOOL fileNotFound;
-@property (readonly, nonatomic) NSUInteger fileSize; // bytes
-@property (readonly, nonatomic) NSUInteger blockNumbers;
-
-- (instancetype)initWithFilePath:(NSString *)filePath;
-- (NSString *)readTextAtBlockIndex:(NSUInteger)blockIndex;
+- (void)beginRenderDocument:(TextDocument *)document;
 
 @end

@@ -8,8 +8,13 @@
 
 #import "ViewController.h"
 #import "TextDocument.h"
+#import "TextFileView.h"
+#import "TextFileScrollView.h"
 
-@interface ViewController ()
+@interface ViewController () <UITextFieldDelegate, UIScrollViewDelegate>
+
+@property (strong, nonatomic) TextDocument *document;
+@property (weak, nonatomic) IBOutlet TextFileView *textFileView;
 
 @end
 
@@ -20,7 +25,8 @@
     // Do any additional setup after loading the view, typically from a nib.
     
     NSString *filePath = [[NSBundle mainBundle] pathForResource:@"log" ofType:@"txt"];
-    TextDocument *document = [[TextDocument alloc] initWithFilePath:filePath];
+    _document = [[TextDocument alloc] initWithFilePath:filePath];
+    [self.textFileView beginRenderDocument:self.document];
 }
 
 - (void)didReceiveMemoryWarning {
