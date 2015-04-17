@@ -10,6 +10,7 @@
  =============================================================================*/
 #import "TextFileScrollView.h"
 #import "TextBlock.h"
+#import "FTCoreTextView.h"
 /*============================================================================
  PRIVATE MACRO
  =============================================================================*/
@@ -22,7 +23,7 @@
 
 @interface TextFileScrollView() <UIScrollViewDelegate>
 
-@property (strong, nonatomic) UILabel *contentLabel;
+@property (strong, nonatomic) FTCoreTextView *contentTextView;
 
 @property (strong, nonatomic) TextDocument *document;
 @property (strong, nonatomic) NSMutableArray *textBlocks;
@@ -57,31 +58,31 @@
     
     self.delegate = self;
     _textBlocks = [NSMutableArray array];
+    
+    FTCoreTextStyle *defaultStyle = [FTCoreTextStyle new];
+    defaultStyle.name = FTCoreTextTagDefault;	//thought the default name is already set to FTCoreTextTagDefault
+    defaultStyle.font = [UIFont fontWithName:@"TimesNewRomanPSMT" size:14.f];
+    defaultStyle.textAlignment = FTCoreTextAlignementLeft;
+    [self.contentTextView addStyle:defaultStyle];
+
 }
 
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    
-    CGRect contentFrame = self.contentLabel.frame;
-    contentFrame.size = [self textSizeWithText:self.contentLabel.text];
-    self.contentLabel.frame = contentFrame;
+- (void)layoutContentSize {
+    [self.contentTextView fitToSuggestedHeight];
     
     // Update content size
     CGSize contentSize = self.contentSize;
-    contentSize.height = contentFrame.size.height;
+    contentSize.width = self.bounds.size.width;
+    contentSize.height = self.contentTextView.frame.size.height;
     self.contentSize = contentSize;
 }
 
 #pragma mark - Private methods
 
 - (void)createBaseUI {
-    if (!self.contentLabel) {
-        _contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height)];
-        self.contentLabel.font = [UIFont systemFontOfSize:14];
-        self.contentLabel.textAlignment = NSTextAlignmentLeft;
-        self.contentLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        self.contentLabel.numberOfLines = 0;
-        [self addSubview:self.contentLabel];
+    if (!self.contentTextView) {
+        _contentTextView = [[FTCoreTextView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height)];
+        [self addSubview:self.contentTextView];
     }
 }
 
@@ -123,13 +124,6 @@
     return result;
 }
 
-- (CGSize)textSizeWithText:(NSString *)text {
-    CGSize limitSize = CGSizeMake(self.bounds.size.width - 16, CGFLOAT_MAX);
-    NSDictionary *attributes = @{NSFontAttributeName: self.contentLabel.font};
-    
-    return [text boundingRectWithSize:limitSize options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:attributes context:nil].size;
-}
-
 #pragma mark - Methods
 
 - (void)beginRenderDocument:(TextDocument *)document {
@@ -137,13 +131,12 @@
     
     // Begin render
     NSString *firstBlockText = [self.document readTextAtBlockIndex:0];
-    self.contentLabel.text = firstBlockText;
-    
-    CGSize textSize = [self textSizeWithText:firstBlockText];
+    self.contentTextView.text = firstBlockText;
+    [self layoutContentSize];
     
     TextBlock *firstBlock = [[TextBlock alloc] init];
     firstBlock.text = firstBlockText;
-    firstBlock.displayRect = CGRectMake(0, self.contentInset.top, self.bounds.size.width, textSize.height);
+    firstBlock.displayRect = CGRectMake(0, self.contentInset.top, self.bounds.size.width, self.contentTextView.bounds.size.height);
     firstBlock.blockIndex = 0;
     [self.textBlocks addObject:firstBlock];
 }
@@ -151,21 +144,17 @@
 #pragma mark - UIScrollView's delegates
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     CGPoint contentOffset = self.contentOffset;
     
     TextBlock *firstBlock = [self.textBlocks firstObject];
     TextBlock *lastBlock = [self.textBlocks lastObject];
     
-    if (contentOffset.y + self.bounds.size.height + 1 >= self.contentSize.height) {
+    if (contentOffset.y + self.bounds.size.height >= self.contentSize.height - 100) {
         // Should read next blocks
         NSString *nextBlockText = [self.document readTextAtBlockIndex:lastBlock.blockIndex + 1];
         
         if (nextBlockText) {
-            float currentHeight = self.contentSize.height;
+            float currentHeight = self.contentTextView.bounds.size.height;
             
             if (self.textBlocks.count >= kMaxTextBlockCount) {
                 // Remove first block
@@ -177,27 +166,27 @@
             
             // Set new text
             NSString *newText = [self getAllTextWithAppend:nextBlockText];
-            self.contentLabel.text = newText;
-            [self setNeedsLayout];
+            self.contentTextView.text = newText;
+            [self layoutContentSize];
             
             // Update new scroll offset
             self.contentOffset = contentOffset;
             
             TextBlock *textBlock = [[TextBlock alloc] init];
             textBlock.text = nextBlockText;
-            textBlock.displayRect = CGRectMake(0, currentHeight, self.bounds.size.width, [self textSizeWithText:newText].height - currentHeight);
+            textBlock.displayRect = CGRectMake(0, currentHeight, self.bounds.size.width, self.contentTextView.bounds.size.height - currentHeight);
             textBlock.blockIndex = lastBlock.blockIndex + 1;
             [self.textBlocks addObject:textBlock];
             
         }
         
         NSLog(@"Draw next");
-    } else if (firstBlock.blockIndex > 0 && contentOffset.y - 1 <= 0) {
+    } else if (firstBlock.blockIndex > 0 && contentOffset.y - 1 <= 100) {
         // Should read previous block
         NSString *previousBlockText = [self.document readTextAtBlockIndex:firstBlock.blockIndex - 1];
         
         if (previousBlockText) {
-            float currentHeight = self.contentSize.height;
+            float currentHeight = self.contentTextView.bounds.size.height;
             
             if (self.textBlocks.count >= kMaxTextBlockCount) {
                 // Remove last block
@@ -212,12 +201,12 @@
             
             // Set new text
             NSString *newText = [self getAllTextWithPreappend:previousBlockText];
-            self.contentLabel.text = newText;
-            [self setNeedsLayout];
+            self.contentTextView.text = newText;
+            [self layoutContentSize];
             
             TextBlock *textBlock = [[TextBlock alloc] init];
             textBlock.text = previousBlockText;
-            textBlock.displayRect = CGRectMake(0, 0, self.bounds.size.width, self.contentSize.height - currentHeight);
+            textBlock.displayRect = CGRectMake(0, 0, self.bounds.size.width, self.contentTextView.bounds.size.height - currentHeight);
             textBlock.blockIndex = firstBlock.blockIndex - 1;
             [self.textBlocks insertObject:textBlock atIndex:0]; // Insert to first object
             

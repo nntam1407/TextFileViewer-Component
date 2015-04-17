@@ -175,12 +175,12 @@
     TextBlock *firstBlock = [self.textBlocks firstObject];
     TextBlock *lastBlock = [self.textBlocks lastObject];
     
-    if (contentOffset.y + self.bounds.size.height >= [self measureHeightOfUITextView:self]) {
+    if (contentOffset.y + self.bounds.size.height >= self.contentSize.height - 100) {
         // Should read next blocks
         NSString *nextBlockText = [self.document readTextAtBlockIndex:lastBlock.blockIndex + 1];
         
         if (nextBlockText) {
-            float currentHeight = [self measureHeightOfUITextView:self];
+            float currentHeight = self.contentSize.height;
             
             if (self.textBlocks.count >= kMaxTextBlockCount) {
                 // Remove first block
@@ -193,24 +193,23 @@
             // Set new text
             NSString *newText = [self getAllTextWithAppend:nextBlockText];
             self.text = newText;
-            [self setContentOffset: CGPointZero animated:NO];
-            [self setContentOffset:contentOffset animated:YES];
+            self.contentOffset = contentOffset;
             
             TextBlock *textBlock = [[TextBlock alloc] init];
             textBlock.text = nextBlockText;
-            textBlock.displayRect = CGRectMake(0, currentHeight, self.bounds.size.width, [self measureHeightOfUITextView:self] - currentHeight);
+            textBlock.displayRect = CGRectMake(0, currentHeight, self.bounds.size.width, self.contentSize.height - currentHeight);
             textBlock.blockIndex = lastBlock.blockIndex + 1;
             [self.textBlocks addObject:textBlock];
             
         }
         
         NSLog(@"Draw next");
-    } else if (firstBlock.blockIndex > 0 && contentOffset.y == 0) {
+    } else if (firstBlock.blockIndex > 0 && contentOffset.y <= 100) {
         // Should read previous block
         NSString *previousBlockText = [self.document readTextAtBlockIndex:firstBlock.blockIndex - 1];
         
         if (previousBlockText) {
-            float currentHeight = [self measureHeightOfUITextView:self];
+            float currentHeight = self.contentSize.height;
             
             if (self.textBlocks.count >= kMaxTextBlockCount) {
                 // Remove last block
@@ -229,7 +228,7 @@
             
             TextBlock *textBlock = [[TextBlock alloc] init];
             textBlock.text = previousBlockText;
-            textBlock.displayRect = CGRectMake(0, 0, self.bounds.size.width, [self measureHeightOfUITextView:self] - currentHeight);
+            textBlock.displayRect = CGRectMake(0, 0, self.bounds.size.width, self.contentSize.height - currentHeight);
             textBlock.blockIndex = firstBlock.blockIndex - 1;
             [self.textBlocks insertObject:textBlock atIndex:0]; // Insert to first object
             

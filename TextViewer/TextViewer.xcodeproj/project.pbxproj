@@ -11,6 +11,8 @@
 		1045896D1AE0CE3600A1D251 /* TextBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 1045896C1AE0CE3600A1D251 /* TextBlock.m */; };
 		10F1B2FE1AE0EEBF003B1B13 /* TextFileScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 10F1B2FD1AE0EEBF003B1B13 /* TextFileScrollView.m */; };
 		10F1B3001AE0F84F003B1B13 /* test.txt in Resources */ = {isa = PBXBuildFile; fileRef = 10F1B2FF1AE0F84F003B1B13 /* test.txt */; };
+		10F1B3061AE105E1003B1B13 /* FTCoreTextStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 10F1B3031AE105E1003B1B13 /* FTCoreTextStyle.m */; };
+		10F1B3071AE105E1003B1B13 /* FTCoreTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 10F1B3051AE105E1003B1B13 /* FTCoreTextView.m */; };
 		10F9DA331ADF92C600F73F7A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 10F9DA321ADF92C600F73F7A /* main.m */; };
 		10F9DA361ADF92C600F73F7A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 10F9DA351ADF92C600F73F7A /* AppDelegate.m */; };
 		10F9DA391ADF92C600F73F7A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 10F9DA381ADF92C600F73F7A /* ViewController.m */; };
@@ -40,6 +42,10 @@
 		10F1B2FC1AE0EEBF003B1B13 /* TextFileScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextFileScrollView.h; sourceTree = "<group>"; };
 		10F1B2FD1AE0EEBF003B1B13 /* TextFileScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextFileScrollView.m; sourceTree = "<group>"; };
 		10F1B2FF1AE0F84F003B1B13 /* test.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.txt; sourceTree = "<group>"; };
+		10F1B3021AE105E1003B1B13 /* FTCoreTextStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTCoreTextStyle.h; sourceTree = "<group>"; };
+		10F1B3031AE105E1003B1B13 /* FTCoreTextStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTCoreTextStyle.m; sourceTree = "<group>"; };
+		10F1B3041AE105E1003B1B13 /* FTCoreTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTCoreTextView.h; sourceTree = "<group>"; };
+		10F1B3051AE105E1003B1B13 /* FTCoreTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTCoreTextView.m; sourceTree = "<group>"; };
 		10F9DA2D1ADF92C600F73F7A /* TextViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TextViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		10F9DA311ADF92C600F73F7A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		10F9DA321ADF92C600F73F7A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -76,6 +82,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		10F1B3011AE105E1003B1B13 /* FTCoreTextView */ = {
+			isa = PBXGroup;
+			children = (
+				10F1B3021AE105E1003B1B13 /* FTCoreTextStyle.h */,
+				10F1B3031AE105E1003B1B13 /* FTCoreTextStyle.m */,
+				10F1B3041AE105E1003B1B13 /* FTCoreTextView.h */,
+				10F1B3051AE105E1003B1B13 /* FTCoreTextView.m */,
+			);
+			path = FTCoreTextView;
+			sourceTree = "<group>";
+		};
 		10F9DA241ADF92C600F73F7A = {
 			isa = PBXGroup;
 			children = (
@@ -97,6 +114,7 @@
 		10F9DA2F1ADF92C600F73F7A /* TextViewer */ = {
 			isa = PBXGroup;
 			children = (
+				10F1B3011AE105E1003B1B13 /* FTCoreTextView */,
 				10FC5D8D1ADFB9650022FAA6 /* log.txt */,
 				10F1B2FF1AE0F84F003B1B13 /* test.txt */,
 				10F9DA341ADF92C600F73F7A /* AppDelegate.h */,
@@ -252,8 +270,10 @@
 				10F9DA581ADF92F100F73F7A /* TextDocument.m in Sources */,
 				10F9DA361ADF92C600F73F7A /* AppDelegate.m in Sources */,
 				1045896D1AE0CE3600A1D251 /* TextBlock.m in Sources */,
+				10F1B3061AE105E1003B1B13 /* FTCoreTextStyle.m in Sources */,
 				10F9DA331ADF92C600F73F7A /* main.m in Sources */,
 				10F1B2FE1AE0EEBF003B1B13 /* TextFileScrollView.m in Sources */,
+				10F1B3071AE105E1003B1B13 /* FTCoreTextView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

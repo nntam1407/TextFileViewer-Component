@@ -14,7 +14,7 @@
 @interface ViewController () <UITextFieldDelegate, UIScrollViewDelegate>
 
 @property (strong, nonatomic) TextDocument *document;
-@property (weak, nonatomic) IBOutlet TextFileView *textFileView;
+@property (weak, nonatomic) IBOutlet TextFileScrollView *textFileView;
 
 @end
 
