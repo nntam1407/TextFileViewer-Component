@@ -69,6 +69,7 @@
 
 - (void)layoutContentSize {
     [self.contentTextView fitToSuggestedHeight];
+//    self.contentTextView.frame = CGRectMake(0, 0, 320, 4000);
     
     // Update content size
     CGSize contentSize = self.contentSize;

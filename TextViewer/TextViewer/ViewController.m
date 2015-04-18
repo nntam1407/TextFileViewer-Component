@@ -15,6 +15,7 @@
 
 @property (strong, nonatomic) TextDocument *document;
 @property (weak, nonatomic) IBOutlet TextFileScrollView *textFileView;
+@property (weak, nonatomic) IBOutlet TextFileView *textView;
 
 @end
 
@@ -26,7 +27,13 @@
     
     NSString *filePath = [[NSBundle mainBundle] pathForResource:@"log" ofType:@"txt"];
     _document = [[TextDocument alloc] initWithFilePath:filePath];
-    [self.textFileView beginRenderDocument:self.document];
+    _document.blockSize = 2048;
+    
+    if (self.textView) {
+        [self.textView beginRenderDocument:self.document];
+    } else {
+        [self.textFileView beginRenderDocument:self.document];
+    }
 }
 
 - (void)didReceiveMemoryWarning {

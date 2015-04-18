@@ -14,7 +14,8 @@
  PRIVATE MACRO
  =============================================================================*/
 
-#define kBufferSize         8192//8192
+#define kBufferSize                     8192//8192
+#define kDefaultTextCacheSize           49152
 
 /*============================================================================
  PRIVATE INTERFACE
@@ -24,6 +25,19 @@
 
 @property (strong, nonatomic) NSData *fileData; // Only map on memory, not read all file to memory
 
+/**
+ * temporary text for each time read from file. 
+ * It may should be 48kb (This number is only guessing). Because character can be 2, 3 or 4 bytes, so 48*1024 % 12 = 0. This make sure all character will be converted to NSString
+ */
+@property (strong, nonatomic) NSData *readTextCacheData;
+
+/**
+ * Range of readTextCache from file.
+ * This will be used for getBlockText method. 
+ * First should check range of block need to get in temp text, if out of range, we should read new temp text
+ */
+@property (assign, nonatomic) NSRange readTextCacheDataRange;
+
 @end
 
 @implementation TextDocument
@@ -32,8 +46,10 @@
     self = [super init];
     
     if (self) {
-        _blockSize = kBufferSize;
         _filePath = filePath;
+        
+        _blockSize = kBufferSize;
+        _readTextCacheDataRange = NSMakeRange(0, 0); // Zero
         
         NSError *error = nil;
         _fileData = [NSData dataWithContentsOfFile:self.filePath options:NSDataReadingMappedIfSafe error:&error];
@@ -50,6 +66,7 @@
 
 - (void)dealloc {
     _fileData = nil;
+    _readTextCacheData = nil;
 }
 
 #pragma mark - Override methods
@@ -130,14 +147,39 @@
         rangeToRead.length = self.fileSize - rangeToRead.location;
     }
     
-    NSMutableData *data = [NSMutableData dataWithCapacity:rangeToRead.length];
-    [self.fileData getBytes:data.mutableBytes range:rangeToRead];
+    /**
+     * First, before read this data from file, we should check this range is contained in readTextCache
+     * If out of range, we will get new temp text, then get text from that
+     */
+    NSData *blockTextData = nil;
     
-    // Convert to NSString data
-    NSString *text = [[NSString alloc] initWithBytes:data.bytes length:rangeToRead.length encoding:NSUTF8StringEncoding];
+    if (rangeToRead.location >= self.readTextCacheDataRange.location &&
+        rangeToRead.location + rangeToRead.length <= self.readTextCacheDataRange.location + self.readTextCacheDataRange.length &&
+        self.readTextCacheData.length > 0) {
+        
+        // Get data from cache
+        blockTextData = [self.readTextCacheData subdataWithRange:NSMakeRange(rangeToRead.location - self.readTextCacheDataRange.location, rangeToRead.length)];
+    } else {
+        // Should read temp data from file
+        self.readTextCacheDataRange = NSMakeRange(rangeToRead.location, kDefaultTextCacheSize);
+        
+        if (self.readTextCacheDataRange.location + self.readTextCacheDataRange.length > self.fileSize) {
+            _readTextCacheDataRange.length = self.fileSize - self.readTextCacheDataRange.location;
+        }
+        
+        // Read from file
+        NSMutableData *data = [NSMutableData dataWithCapacity:_readTextCacheDataRange.length];
+        [self.fileData getBytes:data.mutableBytes range:_readTextCacheDataRange];
+        
+        // Save this cache
+        self.readTextCacheData = [NSData dataWithBytes:data.bytes length:self.readTextCacheDataRange.length];
+        
+        // Get block data after read from file
+        blockTextData = [self.readTextCacheData subdataWithRange:NSMakeRange(rangeToRead.location - self.readTextCacheDataRange.location, rangeToRead.length)];
+    }
     
     // Return text
-    return text;
+    return [[NSString alloc] initWithData:blockTextData encoding:NSUTF8StringEncoding];
 }
 
 @end
