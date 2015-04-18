@@ -42,6 +42,8 @@
 
 @implementation TextDocument
 
+@synthesize delegate = _delegate;
+
 - (instancetype)initWithFilePath:(NSString *)filePath {
     self = [super init];
     
@@ -180,6 +182,20 @@
     
     // Return text
     return [[NSString alloc] initWithData:blockTextData encoding:NSUTF8StringEncoding];
+}
+
+#pragma mark - Supoort for search
+
+- (void)startSeachWithText:(NSString *)text {
+    [self cancelSearch];
+}
+
+- (void)cancelSearch {
+    _isSearching = NO;
+    
+    if (self.searchResult) {
+        [self.searchResult removeAllObjects];
+    }
 }
 
 @end

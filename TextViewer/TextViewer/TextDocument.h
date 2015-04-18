@@ -19,12 +19,22 @@
  PROTOCOL
  =============================================================================*/
 
+@protocol TextDocumentDelegates <NSObject>
+
+@optional
+
+@end
+
 /*============================================================================
  Interface:   TextDocument
  =============================================================================*/
 
 
-@interface TextDocument : NSObject
+@interface TextDocument : NSObject {
+    __weak id<TextDocumentDelegates> _delegate;
+}
+
+@property (weak, nonatomic) id<TextDocumentDelegates> delegate;
 
 @property (readonly, nonatomic) NSString *filePath;
 @property (assign, nonatomic) NSUInteger blockSize; // Unit is byte. Default is kBufferSize
@@ -33,7 +43,19 @@
 @property (readonly, nonatomic) NSUInteger fileSize; // bytes
 @property (readonly, nonatomic) NSUInteger blockNumbers;
 
+/* Properties for search */
+@property (readonly, nonatomic) BOOL isSearching;
+@property (readonly, nonatomic) NSMutableArray *searchResult;
+
 - (instancetype)initWithFilePath:(NSString *)filePath;
+
+#pragma mark - Read text methods
+
 - (NSString *)readTextAtBlockIndex:(NSUInteger)blockIndex;
+
+#pragma mark - Supoort for search
+
+- (void)startSeachWithText:(NSString *)text;
+- (void)cancelSearch;
 
 @end
