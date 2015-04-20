@@ -15,6 +15,8 @@
  MACRO
  =============================================================================*/
 
+@class TextDocument;
+@class TextSearchResult;
 /*============================================================================
  PROTOCOL
  =============================================================================*/
@@ -22,6 +24,12 @@
 @protocol TextDocumentDelegates <NSObject>
 
 @optional
+
+- (void)textDocument:(TextDocument *)document beginSearchText:(NSString *)keyword;
+- (void)textDocument:(TextDocument *)document searchText:(NSString *)keyword didFoundResult:(TextSearchResult *)result;
+- (void)textDocument:(TextDocument *)document didSearchInBlocTextWithKeyword:(NSString *)keyword;
+- (void)textDocument:(TextDocument *)document finishedSearchText:(NSString *)keyword;
+- (void)textDocument:(TextDocument *)document searchText:(NSString *)keyword failedWithError:(NSError *)error;
 
 @end
 
