@@ -23,12 +23,11 @@
 
 @implementation TextSearchResult
 
-- (instancetype)initWithBlockDataRange:(NSRange)blockDataRange rangeOfKeywordInBlockText:(NSRange)rangeInBlockText {
+- (instancetype)initWithDataRange:(NSRange)dataRange {
     self = [super init];
     
     if (self) {
-        _blockDataRange = blockDataRange;
-        _rangeInBlockText = rangeInBlockText;
+        _dataRange = dataRange;
     }
     
     return self;

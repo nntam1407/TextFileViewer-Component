@@ -281,7 +281,11 @@
                                         // Update next search range
                                         searchRangeInText.location = foundRange.location + foundRange.length;
                                         
-                                        TextSearchResult *result = [[TextSearchResult alloc] initWithBlockDataRange:NSMakeRange(readByteSeekPoint, readLength) rangeOfKeywordInBlockText:foundRange];
+                                        // calculator range of byte on file of this result
+                                        int resultByteLength = [[blockText substringWithRange:foundRange] dataUsingEncoding:NSUTF8StringEncoding].length;
+                                        int resultByteOffset = [[blockText substringToIndex:foundRange.location] dataUsingEncoding:NSUTF8StringEncoding].length;
+                                        
+                                        TextSearchResult *result = [[TextSearchResult alloc] initWithDataRange:NSMakeRange(readByteSeekPoint + resultByteOffset, resultByteLength)];
                                         [weakSelf.searchResult addObject:result];
                                         
                                         // Call delegate did found text

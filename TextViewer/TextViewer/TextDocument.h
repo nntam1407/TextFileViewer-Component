@@ -65,5 +65,6 @@
 
 - (void)startSeachWithText:(NSString *)text;
 - (void)cancelSearch;
+- (NSUInteger)getBlockTextIndexOfSearchResult:(TextSearchResult *)searchResult;
 
 @end

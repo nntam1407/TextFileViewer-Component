@@ -25,12 +25,9 @@
 
 @interface TextSearchResult : NSObject
 
-// range of block data contain this word
-@property (readonly, nonatomic) NSRange blockDataRange;
+// range of data of this word on file
+@property (readonly, nonatomic) NSRange dataRange;
 
-// Range of this keyword on text after comvert from bytes to NSString
-@property (readonly, nonatomic) NSRange rangeInBlockText;
-
-- (instancetype)initWithBlockDataRange:(NSRange)blockDataRange rangeOfKeywordInBlockText:(NSRange)rangeInBlockText;
+- (instancetype)initWithDataRange:(NSRange)dataRange;
 
 @end
