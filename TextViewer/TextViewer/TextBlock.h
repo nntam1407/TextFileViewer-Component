@@ -25,7 +25,7 @@
 
 @interface TextBlock : NSObject
 
-@property (strong, nonatomic) NSString *text;
+@property (strong, nonatomic) NSAttributedString *text;
 @property (assign, nonatomic) CGRect displayRect;
 @property (assign, nonatomic) NSUInteger blockIndex;
 

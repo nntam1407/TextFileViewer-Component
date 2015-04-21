@@ -9,12 +9,10 @@
 #import "ViewController.h"
 #import "TextDocument.h"
 #import "TextFileView.h"
-#import "TextFileScrollView.h"
 
 @interface ViewController () <UITextFieldDelegate, UIScrollViewDelegate, TextDocumentDelegates>
 
 @property (strong, nonatomic) TextDocument *document;
-@property (weak, nonatomic) IBOutlet TextFileScrollView *textFileView;
 @property (weak, nonatomic) IBOutlet TextFileView *textView;
 @property (weak, nonatomic) IBOutlet UIButton *searchButton;
 @property (weak, nonatomic) IBOutlet UILabel *searchResultCount;
@@ -32,11 +30,7 @@
     _document.blockSize = 2048;
     _document.delegate = self;
     
-    if (self.textView) {
-        [self.textView beginRenderDocument:self.document];
-    } else {
-        [self.textFileView beginRenderDocument:self.document];
-    }
+    [self.textView beginRenderDocument:self.document];
 }
 
 - (void)didReceiveMemoryWarning {

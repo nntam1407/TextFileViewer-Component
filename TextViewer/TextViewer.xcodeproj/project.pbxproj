@@ -10,7 +10,6 @@
 		1045896A1AE0C09600A1D251 /* TextFileView.m in Sources */ = {isa = PBXBuildFile; fileRef = 104589691AE0C09600A1D251 /* TextFileView.m */; };
 		1045896D1AE0CE3600A1D251 /* TextBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 1045896C1AE0CE3600A1D251 /* TextBlock.m */; };
 		10ADB9641AE2523300B11994 /* TextSearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 10ADB9631AE2523300B11994 /* TextSearchResult.m */; };
-		10F1B2FE1AE0EEBF003B1B13 /* TextFileScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 10F1B2FD1AE0EEBF003B1B13 /* TextFileScrollView.m */; };
 		10F1B3001AE0F84F003B1B13 /* test.txt in Resources */ = {isa = PBXBuildFile; fileRef = 10F1B2FF1AE0F84F003B1B13 /* test.txt */; };
 		10F1B3061AE105E1003B1B13 /* FTCoreTextStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 10F1B3031AE105E1003B1B13 /* FTCoreTextStyle.m */; };
 		10F1B3071AE105E1003B1B13 /* FTCoreTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 10F1B3051AE105E1003B1B13 /* FTCoreTextView.m */; };
@@ -42,8 +41,6 @@
 		1045896C1AE0CE3600A1D251 /* TextBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextBlock.m; sourceTree = "<group>"; };
 		10ADB9621AE2523300B11994 /* TextSearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextSearchResult.h; sourceTree = "<group>"; };
 		10ADB9631AE2523300B11994 /* TextSearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextSearchResult.m; sourceTree = "<group>"; };
-		10F1B2FC1AE0EEBF003B1B13 /* TextFileScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextFileScrollView.h; sourceTree = "<group>"; };
-		10F1B2FD1AE0EEBF003B1B13 /* TextFileScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextFileScrollView.m; sourceTree = "<group>"; };
 		10F1B2FF1AE0F84F003B1B13 /* test.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.txt; sourceTree = "<group>"; };
 		10F1B3021AE105E1003B1B13 /* FTCoreTextStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTCoreTextStyle.h; sourceTree = "<group>"; };
 		10F1B3031AE105E1003B1B13 /* FTCoreTextStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTCoreTextStyle.m; sourceTree = "<group>"; };
@@ -136,8 +133,6 @@
 				10ADB9631AE2523300B11994 /* TextSearchResult.m */,
 				104589681AE0C09600A1D251 /* TextFileView.h */,
 				104589691AE0C09600A1D251 /* TextFileView.m */,
-				10F1B2FC1AE0EEBF003B1B13 /* TextFileScrollView.h */,
-				10F1B2FD1AE0EEBF003B1B13 /* TextFileScrollView.m */,
 			);
 			path = TextViewer;
 			sourceTree = "<group>";
@@ -278,7 +273,6 @@
 				1045896D1AE0CE3600A1D251 /* TextBlock.m in Sources */,
 				10F1B3061AE105E1003B1B13 /* FTCoreTextStyle.m in Sources */,
 				10F9DA331ADF92C600F73F7A /* main.m in Sources */,
-				10F1B2FE1AE0EEBF003B1B13 /* TextFileScrollView.m in Sources */,
 				10F1B3071AE105E1003B1B13 /* FTCoreTextView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

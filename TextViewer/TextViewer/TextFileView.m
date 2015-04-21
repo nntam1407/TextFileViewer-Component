@@ -61,42 +61,42 @@
 
 #pragma mark - Private methods
 
-- (NSString *)getAllTextWithAppend:(NSString *)appendText {
+- (NSAttributedString *)getAllTextWithAppend:(NSAttributedString *)appendText {
     if (self.textBlocks.count == 0) {
         return appendText;
     }
     
-    NSString *result = [self.textBlocks[0] text];
+    NSMutableAttributedString *result = [[NSMutableAttributedString alloc] initWithAttributedString:[(TextBlock *)self.textBlocks[0] text]];
     
     for (int i = 1; i < self.textBlocks.count; i++) {
         TextBlock *block = (TextBlock *)[self.textBlocks objectAtIndex:i];
-        result = [result stringByAppendingString:block.text];
+        [result appendAttributedString:block.text];
     }
     
     if (appendText) {
-        result = [result stringByAppendingString:appendText];
+        [result appendAttributedString:appendText];
     }
     
     return result;
 }
 
-- (NSString *)getAllTextWithPreappend:(NSString *)preappenText {
+- (NSAttributedString *)getAllTextWithPreappend:(NSAttributedString *)preappenText {
     if (self.textBlocks.count == 0) {
         return preappenText;
     }
     
-    NSString *result = [self.textBlocks[0] text];
+    NSMutableAttributedString *resultString = [[NSMutableAttributedString alloc] initWithAttributedString:[(TextBlock *)self.textBlocks[0] text]];
     
     for (int i = 1; i < self.textBlocks.count; i++) {
         TextBlock *block = (TextBlock *)[self.textBlocks objectAtIndex:i];
-        result = [result stringByAppendingString:block.text];
+        [resultString appendAttributedString:block.text];
     }
     
     if (preappenText) {
-        result = [preappenText stringByAppendingString:result];
+        [resultString insertAttributedString:preappenText atIndex:0];
     }
     
-    return result;
+    return resultString;
 }
 
 #pragma mark - Methods
@@ -105,8 +105,8 @@
     _document = document;
     
     // Begin render
-    NSString *firstBlockText = [self.document readTextAtBlockIndex:0];
-    self.text = firstBlockText;
+    NSAttributedString *firstBlockText = [self.document readTextAtBlockIndex:0 hightlightSearch:YES];
+    self.attributedText = firstBlockText;
     [self layoutIfNeeded];
     
     TextBlock *firstBlock = [[TextBlock alloc] init];
@@ -126,7 +126,7 @@
     
     if (contentOffset.y + self.bounds.size.height >= self.contentSize.height - 100) {
         // Should read next blocks
-        NSString *nextBlockText = [self.document readTextAtBlockIndex:lastBlock.blockIndex + 1];
+        NSAttributedString *nextBlockText = [self.document readTextAtBlockIndex:lastBlock.blockIndex + 1 hightlightSearch:YES];
         
         if (nextBlockText) {
             float currentHeight = self.contentSize.height;
@@ -140,8 +140,8 @@
             }
             
             // Set new text
-            NSString *newText = [self getAllTextWithAppend:nextBlockText];
-            self.text = newText;
+            NSAttributedString *newText = [self getAllTextWithAppend:nextBlockText];
+            self.attributedText = newText;
             self.contentOffset = contentOffset;
             [self layoutIfNeeded]; // Refesh to update content size, content offset
             
@@ -153,7 +153,7 @@
         }
     } else if (firstBlock.blockIndex > 0 && contentOffset.y <= 100) {
         // Should read previous block
-        NSString *previousBlockText = [self.document readTextAtBlockIndex:firstBlock.blockIndex - 1];
+        NSAttributedString *previousBlockText = [self.document readTextAtBlockIndex:firstBlock.blockIndex - 1 hightlightSearch:YES];
         
         if (previousBlockText) {
             float currentHeight = self.contentSize.height;
@@ -170,8 +170,8 @@
             }
             
             // Set new text
-            NSString *newText = [self getAllTextWithPreappend:previousBlockText];
-            self.text = newText;
+            NSAttributedString *newText = [self getAllTextWithPreappend:previousBlockText];
+            self.attributedText = newText;
             
             TextBlock *textBlock = [[TextBlock alloc] init];
             textBlock.text = previousBlockText;

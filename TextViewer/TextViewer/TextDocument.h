@@ -49,6 +49,7 @@
 
 @property (readonly, nonatomic) BOOL fileNotFound;
 @property (readonly, nonatomic) NSUInteger fileSize; // bytes
+@property (readonly, nonatomic) NSStringEncoding fileEncoding;
 @property (readonly, nonatomic) NSUInteger blockNumbers;
 
 /* Properties for search */
@@ -59,7 +60,7 @@
 
 #pragma mark - Read text methods
 
-- (NSString *)readTextAtBlockIndex:(NSUInteger)blockIndex;
+- (NSAttributedString *)readTextAtBlockIndex:(NSUInteger)blockIndex hightlightSearch:(BOOL)hightlightSearch;
 
 #pragma mark - Supoort for search
 

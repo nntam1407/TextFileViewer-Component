@@ -40,6 +40,7 @@
 
 // Support for search text
 @property (strong, nonatomic) NSString *currentSearchText;
+@property (assign, atomic) BOOL isCancelling;
 
 @end
 
@@ -64,6 +65,9 @@
         } else {
             _fileData = nil;
         }
+        
+        // Get file encoding
+        _fileEncoding = [self detectEncodingOfFile];
     }
     
     return self;
@@ -98,6 +102,33 @@
 
 #pragma mark - Private methods
 
+- (NSStringEncoding)detectEncodingOfFile {
+    NSStringEncoding encoding = NSUTF8StringEncoding; // Default is UTF-8
+    
+    /**
+     * To get encoding of this file, we should get 12 fist bytes, because we have 3 bytes or 4 bytes encoding
+     */
+    NSRange readRange = NSMakeRange(0, 12);
+    
+    if (readRange.length > self.fileSize) {
+        readRange.length = self.fileSize;
+    }
+    
+    NSMutableData *data = [NSMutableData dataWithCapacity:readRange.length];
+    [self.fileData getBytes:data.mutableBytes range:readRange];
+    
+    // Detect encoding of this data
+    NSDictionary *documentAttributes = nil;
+    NSAttributedString *text = [[NSMutableAttributedString alloc] initWithData:[NSData dataWithBytes:data.bytes length:readRange.length] options:nil documentAttributes:&documentAttributes error:nil];
+    
+    if (documentAttributes) {
+        encoding = [documentAttributes[NSCharacterEncodingDocumentAttribute] integerValue];
+    }
+    
+    NSLog(@"%@", text.string);
+    return encoding;
+}
+
 /*----------------------------------------------------------------------------
  Method:      This method will be process and init basic information to draw this file
  -----------------------------------------------------------------------------*/
@@ -123,7 +154,7 @@
             [fileData getBytes:data range:NSMakeRange(readPointer, byteToRead)];
             
             // Convert to NSString data
-            NSString *text = [[NSString alloc] initWithBytes:data length:byteToRead encoding:NSUTF8StringEncoding];
+            NSString *text = [[NSString alloc] initWithBytes:data length:byteToRead encoding:self.fileEncoding];
             
             if (text) {
                 CGSize size = [text boundingRectWithSize:limmitSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil].size;
@@ -142,7 +173,7 @@
 
 #pragma mark - Methods
 
-- (NSString *)readTextAtBlockIndex:(NSUInteger)blockIndex {
+- (NSAttributedString *)readTextAtBlockIndex:(NSUInteger)blockIndex hightlightSearch:(BOOL)hightlightSearch {
     if (blockIndex >= self.blockNumbers || !self.fileData) {
         return nil;
     }
@@ -186,7 +217,10 @@
     }
     
     // Return text
-    return [[NSString alloc] initWithData:blockTextData encoding:NSUTF8StringEncoding];
+    NSDictionary *documentAttributes = nil;
+    
+    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithData:blockTextData options:nil documentAttributes:&documentAttributes error:nil];
+    return text;
 }
 
 #pragma mark - Supoort for search
@@ -249,7 +283,7 @@
                     @autoreleasepool {
                         NSMutableData *data = [NSMutableData dataWithCapacity:readLength];
                         [searchFileData getBytes:data.mutableBytes range:NSMakeRange(readByteSeekPoint, readLength)];
-                        NSString *blockText = [[NSString alloc] initWithBytes:data.bytes length:readLength encoding:NSUTF8StringEncoding];
+                        NSString *blockText = [[NSString alloc] initWithBytes:data.bytes length:readLength encoding:weakSelf.fileEncoding];
                         
                         if (blockText) {
                             // Remove last word of this block text
@@ -261,7 +295,7 @@
                                  * then update readLength value
                                  */
                                 NSString *deletedText = [blockText substringFromIndex:range.location+1];
-                                NSData *deletedData = [deletedText dataUsingEncoding:NSUTF8StringEncoding];
+                                NSData *deletedData = [deletedText dataUsingEncoding:weakSelf.fileEncoding];
                                 readLength -= deletedData.length;
                                 
                                 // Take the first substring: from 0 to the space character
@@ -282,19 +316,23 @@
                                         searchRangeInText.location = foundRange.location + foundRange.length;
                                         
                                         // calculator range of byte on file of this result
-                                        int resultByteLength = [[blockText substringWithRange:foundRange] dataUsingEncoding:NSUTF8StringEncoding].length;
-                                        int resultByteOffset = [[blockText substringToIndex:foundRange.location] dataUsingEncoding:NSUTF8StringEncoding].length;
+                                        int resultByteLength = [[blockText substringWithRange:foundRange] dataUsingEncoding:weakSelf.fileEncoding].length;
+                                        int resultByteOffset = [[blockText substringToIndex:foundRange.location] dataUsingEncoding:weakSelf.fileEncoding].length;
                                         
                                         TextSearchResult *result = [[TextSearchResult alloc] initWithDataRange:NSMakeRange(readByteSeekPoint + resultByteOffset, resultByteLength)];
-                                        [weakSelf.searchResult addObject:result];
                                         
-                                        // Call delegate did found text
-                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                            if (weakSelf && weakSelf.delegate && [weakSelf.delegate respondsToSelector:@selector(textDocument:searchText:didFoundResult:)]) {
-                                                [weakSelf.delegate textDocument:weakSelf searchText:searchText didFoundResult:result];
-                                            }
-                                        });
-                                        
+                                        if (!weakSelf.isCancelling) {
+                                            [weakSelf.searchResult addObject:result];
+                                            
+                                            // Call delegate did found text
+                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                if (weakSelf && weakSelf.delegate && [weakSelf.delegate respondsToSelector:@selector(textDocument:searchText:didFoundResult:)]) {
+                                                    [weakSelf.delegate textDocument:weakSelf searchText:searchText didFoundResult:result];
+                                                }
+                                            });
+                                        } else {
+                                            break;
+                                        }
                                     } else {
                                         // Maybe document object has been dealloc, or start new search with difference text
                                         break;
@@ -337,11 +375,12 @@
 - (void)cancelSearch {
     _isSearching = NO;
     self.currentSearchText = nil;
+    self.isCancelling = YES;
     
-    if (self.searchResult) {
-        [self.searchResult removeAllObjects];
-        _searchResult = nil;
-    }
+    [self.searchResult removeAllObjects];
+    _searchResult = nil;
+    
+    self.isCancelling = NO;
 }
 
 @end
