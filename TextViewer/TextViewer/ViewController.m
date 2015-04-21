@@ -43,7 +43,7 @@
         [self.document cancelSearch];
         self.searchButton.selected = NO;
     } else {
-        [self.document startSeachWithText:@"a"];
+        [self.document startSeachWithText:@"java"];
     }
 }
 

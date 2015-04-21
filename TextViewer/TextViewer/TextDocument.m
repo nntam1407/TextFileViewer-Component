@@ -129,6 +129,24 @@
     return encoding;
 }
 
+- (NSArray *)searchResultsInBlockIndex:(NSUInteger)blockIndex {
+    NSRange blockRange = NSMakeRange(blockIndex * self.blockSize, self.blockSize);
+    
+    if (blockRange.location + blockRange.length > self.fileSize) {
+        blockRange.length = self.fileSize - blockRange.location;
+    }
+    
+    NSMutableArray *result = [NSMutableArray array];
+    
+    for (TextSearchResult *search in self.searchResult) {
+        if (search.dataRange.location >= blockRange.location && search.dataRange.length <= blockRange.length) {
+            [result addObject:search];
+        }
+    }
+    
+    return result;
+}
+
 /*----------------------------------------------------------------------------
  Method:      This method will be process and init basic information to draw this file
  -----------------------------------------------------------------------------*/
@@ -218,8 +236,28 @@
     
     // Return text
     NSDictionary *documentAttributes = nil;
-    
     NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithData:blockTextData options:nil documentAttributes:&documentAttributes error:nil];
+    
+    if (text.length > 0 && hightlightSearch && self.currentSearchText.length > 0) {
+        // Find all search result in data block
+        NSRange searchRangeInText = NSMakeRange(0, text.string.length);
+        
+        while (searchRangeInText.location < text.string.length) {
+            searchRangeInText.length = text.string.length - searchRangeInText.location;
+            NSRange foundRange = [text.string rangeOfString:self.currentSearchText options:NSCaseInsensitiveSearch range:searchRangeInText];
+            
+            if (foundRange.location != NSNotFound) {
+                searchRangeInText.location = foundRange.location + foundRange.length;
+                
+                // Hight light this ranges
+                [text addAttribute:NSBackgroundColorAttributeName value:[UIColor yellowColor] range:foundRange];
+            } else {
+                // Found nothing. Break to start search in new block text
+                break;
+            }
+        }
+    }
+    
     return text;
 }
 
