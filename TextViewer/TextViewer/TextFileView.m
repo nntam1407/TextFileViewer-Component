@@ -198,18 +198,28 @@
             [self removeAllDisplayText];
             
             NSAttributedString *blockText = [self.document readTextAtBlockIndex:blockIndex hightlightSearch:YES];
-            self.attributedText = blockText;
-            [self layoutIfNeeded];
+            
+            if (self.textBlocks.count >= kMaxTextBlockCount) {
+                // Remove first block
+                while (self.textBlocks.count == kMaxTextBlockCount - 1) {
+                    [self.textBlocks removeObjectAtIndex:0];
+                }
+            }
             
             TextBlock *firstBlock = [[TextBlock alloc] init];
             firstBlock.text = blockText;
             firstBlock.displayRect = CGRectMake(0, self.contentInset.top, self.bounds.size.width, self.contentSize.height);
             firstBlock.blockIndex = blockIndex;
             [self.textBlocks addObject:firstBlock];
+            
+            NSLog(@"Add goto search %d", blockIndex);
+            
+            self.attributedText = blockText;
+            [self layoutIfNeeded];
         }
         
         // Should find range of this text, then scroll to that
-        CGRect textVisibleRect = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height/2);
+        CGRect textVisibleRect = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
         NSUInteger firstBlockIndex = ((TextBlock *)[self.textBlocks firstObject]).blockIndex;
         NSRange dataFromBeginToKeywordRange = NSMakeRange(firstBlockIndex * self.document.blockSize, (searchResult.dataRange.location + searchResult.dataRange.length) - firstBlockIndex * self.document.blockSize);
         
@@ -242,7 +252,9 @@
             
             if (self.textBlocks.count >= kMaxTextBlockCount) {
                 // Remove first block
-                [self.textBlocks removeObjectAtIndex:0];
+                while (self.textBlocks.count == kMaxTextBlockCount - 1) {
+                    [self.textBlocks removeObjectAtIndex:0];
+                }
                 
                 currentHeight -= firstBlock.displayRect.size.height;
                 contentOffset.y -= firstBlock.displayRect.size.height;
@@ -250,15 +262,18 @@
             
             // Set new text
             NSAttributedString *newText = [self getAllTextWithAppend:nextBlockText];
-            self.attributedText = newText;
-            self.contentOffset = contentOffset;
-            [self layoutIfNeeded]; // Refesh to update content size, content offset
             
             TextBlock *textBlock = [[TextBlock alloc] init];
             textBlock.text = nextBlockText;
             textBlock.displayRect = CGRectMake(0, currentHeight, self.bounds.size.width, self.contentSize.height - currentHeight);
             textBlock.blockIndex = lastBlock.blockIndex + 1;
             [self.textBlocks addObject:textBlock];
+            
+            self.attributedText = newText;
+            self.contentOffset = contentOffset;
+            [self layoutIfNeeded]; // Refesh to update content size, content offset
+            
+            NSLog(@"Add scroll down %d", textBlock.blockIndex);
         }
     } else if (firstBlock.blockIndex > 0 && contentOffset.y <= 100) {
         // Should read previous block
@@ -269,7 +284,9 @@
             
             if (self.textBlocks.count >= kMaxTextBlockCount) {
                 // Remove last block
-                [self.textBlocks removeLastObject];
+                while (self.textBlocks.count == kMaxTextBlockCount - 1) {
+                    [self.textBlocks removeLastObject];
+                }
                 
                 currentHeight -= lastBlock.displayRect.size.height;
                 
@@ -287,7 +304,7 @@
             textBlock.displayRect = CGRectMake(0, 0, self.bounds.size.width, self.contentSize.height - currentHeight);
             textBlock.blockIndex = firstBlock.blockIndex - 1;
             [self.textBlocks insertObject:textBlock atIndex:0]; // Insert to first object
-            
+            NSLog(@"Add scroll up %d", textBlock.blockIndex);
             
             // Recalculate content offset
             contentOffset.y += textBlock.displayRect.size.height;
