@@ -60,6 +60,18 @@
     _textBlocks = [NSMutableArray array];
 }
 
+- (void)setFont:(UIFont *)font {
+    [super setFont:font];
+    [self setNeedsLayout];
+}
+
+- (void)setAttributedText:(NSAttributedString *)attributedText {
+    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithAttributedString:attributedText];
+    [text addAttribute:NSFontAttributeName value:self.font range:NSMakeRange(0, attributedText.length)];
+    
+    [super setAttributedText:text];
+}
+
 #pragma mark - Private methods
 
 - (NSAttributedString *)getAllTextWithAppend:(NSAttributedString *)appendText {

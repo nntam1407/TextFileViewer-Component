@@ -50,6 +50,10 @@
     }
 }
 
+- (IBAction)didChangeFontSize:(UISlider *)sender {
+    self.textView.font = [self.textView.font fontWithSize:sender.value];
+}
+
 #pragma mark - TextDocument's delegates
 
 - (void)textDocument:(TextDocument *)document beginSearchText:(NSString *)keyword {
