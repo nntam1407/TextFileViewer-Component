@@ -62,6 +62,7 @@
 #pragma mark - Read text methods
 
 - (NSAttributedString *)readTextAtBlockIndex:(NSUInteger)blockIndex hightlightSearch:(BOOL)hightlightSearch;
+- (NSAttributedString *)readTextInRange:(NSRange)range;
 
 #pragma mark - Supoort for search
 

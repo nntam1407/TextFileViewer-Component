@@ -178,7 +178,7 @@
     }
 }
 
-- (void)gotoSearchResult:(TextSearchResult *)searchResult {
+- (void)gotoSearchResult:(TextSearchResult *)searchResult animated:(BOOL)animated {
     if (searchResult) {
         int blockIndex = searchResult.dataRange.location / self.document.blockSize;
         
@@ -186,7 +186,7 @@
         BOOL isDisplayingBlock = NO;
         
         for (TextBlock *block in self.textBlocks) {
-            if (block.blockIndex == isDisplayingBlock) {
+            if (block.blockIndex == blockIndex) {
                 isDisplayingBlock = YES;
                 break;
             }
@@ -209,7 +209,19 @@
         }
         
         // Should find range of this text, then scroll to that
+        CGRect textVisibleRect = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height/2);
+        NSUInteger firstBlockIndex = ((TextBlock *)[self.textBlocks firstObject]).blockIndex;
+        NSRange dataFromBeginToKeywordRange = NSMakeRange(firstBlockIndex * self.document.blockSize, (searchResult.dataRange.location + searchResult.dataRange.length) - firstBlockIndex * self.document.blockSize);
         
+        // Get text from this data range, then calculate how height of that text
+        NSAttributedString *prefixText = [self.document readTextInRange:dataFromBeginToKeywordRange];
+        CGSize textSize = [self textSizeWithText:prefixText.string];
+        
+        // Update origin y of frame need to scroll to
+        textVisibleRect.origin.y = textSize.height;
+        
+        // Scroll to range
+        [self scrollRectToVisible:textVisibleRect animated:animated];
     }
 }
 
@@ -288,5 +300,15 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     
 }
+
+#pragma mark - Utils methods
+
+- (CGSize)textSizeWithText:(NSString *)text {
+    CGSize limitSize = CGSizeMake(self.bounds.size.width, CGFLOAT_MAX);
+    NSDictionary *attributes = @{NSFontAttributeName: self.font};
+    
+    return [text boundingRectWithSize:limitSize options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:attributes context:nil].size;
+}
+
 
 @end

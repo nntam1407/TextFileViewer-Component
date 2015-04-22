@@ -39,6 +39,6 @@
 /*----------------------------------------------------------------------------
  Method:      This method will be draw block which contain this search result
  -----------------------------------------------------------------------------*/
-- (void)gotoSearchResult:(TextSearchResult *)searchResult;
+- (void)gotoSearchResult:(TextSearchResult *)searchResult animated:(BOOL)animated;
 
 @end

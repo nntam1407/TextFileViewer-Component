@@ -264,6 +264,41 @@
     return text;
 }
 
+- (NSAttributedString *)readTextInRange:(NSRange)range {
+    if (range.location > self.fileSize) {
+        range.location = self.fileSize;
+        range.length = 0;
+    } else if (range.location + range.length > self.fileSize) {
+        range.length = self.fileSize - range.location;
+    }
+    
+    /**
+     * First, before read this data from file, we should check this range is contained in readTextCache
+     * If out of range, we will get new temp text, then get text from that
+     */
+    NSData *blockTextData = nil;
+    
+    if (range.location >= self.readTextCacheDataRange.location &&
+        range.location + range.length <= self.readTextCacheDataRange.location + self.readTextCacheDataRange.length &&
+        self.readTextCacheData.length > 0) {
+        
+        // Get data from cache
+        blockTextData = [self.readTextCacheData subdataWithRange:NSMakeRange(range.location - self.readTextCacheDataRange.location, range.length)];
+    } else {
+        // Read from file
+        NSMutableData *data = [NSMutableData dataWithCapacity:range.length];
+        [self.fileData getBytes:data.mutableBytes range:range];
+        
+        // Get block data after read from file
+        blockTextData = [NSData dataWithBytes:data.bytes length:range.length];
+    }
+    
+    // Return text
+    NSDictionary *documentAttributes = nil;
+    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithData:blockTextData options:nil documentAttributes:&documentAttributes error:nil];
+    return text;
+}
+
 #pragma mark - Supoort for search
 
 - (void)startSeachWithText:(NSString *)text {

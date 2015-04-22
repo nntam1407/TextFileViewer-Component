@@ -17,6 +17,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *searchButton;
 @property (weak, nonatomic) IBOutlet UILabel *searchResultCount;
 
+@property (assign, nonatomic) NSInteger currentSearchIndex;
+
 @end
 
 @implementation ViewController
@@ -46,12 +48,31 @@
         // Refresh content
         [self.textView refreshContent];
     } else {
+        self.currentSearchIndex = -1;
         [self.document startSeachWithText:@"java"];
     }
 }
 
 - (IBAction)didChangeFontSize:(UISlider *)sender {
     self.textView.font = [self.textView.font fontWithSize:sender.value];
+}
+
+- (IBAction)didTouchPreviousResult:(id)sender {
+    self.currentSearchIndex--;
+    
+    if (self.currentSearchIndex >= 0 && self.document.searchResult.count > 0) {
+        TextSearchResult *result = self.document.searchResult[self.currentSearchIndex];
+        [self.textView gotoSearchResult:result animated:YES];
+    }
+}
+
+- (IBAction)didTouchNextResult:(id)sender {
+    self.currentSearchIndex++;
+    
+    if (self.currentSearchIndex < self.document.searchResult.count && self.document.searchResult.count > 0) {
+        TextSearchResult *result = self.document.searchResult[self.currentSearchIndex];
+        [self.textView gotoSearchResult:result animated:YES];
+    }
 }
 
 #pragma mark - TextDocument's delegates
