@@ -26,4 +26,19 @@
 
 - (void)beginRenderDocument:(TextDocument *)document;
 
+/*----------------------------------------------------------------------------
+ Method:      Redraw all text
+ -----------------------------------------------------------------------------*/
+- (void)refreshContent;
+
+/*----------------------------------------------------------------------------
+ Method:      This method will be redraw text in block index
+ -----------------------------------------------------------------------------*/
+- (void)refreshContentAtBlockIndex:(int)blockIndex;
+
+/*----------------------------------------------------------------------------
+ Method:      This method will be draw block which contain this search result
+ -----------------------------------------------------------------------------*/
+- (void)gotoSearchResult:(TextSearchResult *)searchResult;
+
 @end

@@ -17,6 +17,8 @@
 #define kBufferSize                     8192//8192
 #define kDefaultTextCacheSize           49152
 
+#define kDefaultMaxSearchResult         10000 // 10000+
+
 /*============================================================================
  PRIVATE INTERFACE
  =============================================================================*/
@@ -56,6 +58,7 @@
         
         _blockSize = kBufferSize;
         _readTextCacheDataRange = NSMakeRange(0, 0); // Zero
+        _maxSearchResult = kDefaultMaxSearchResult;
         
         NSError *error = nil;
         _fileData = [NSData dataWithContentsOfFile:self.filePath options:NSDataReadingMappedIfSafe error:&error];
@@ -310,7 +313,7 @@
                 // Start of begin file
                 NSUInteger readByteSeekPoint = 0;
                 
-                while (weakSelf && [weakSelf.currentSearchText isEqualToString:searchText] && readByteSeekPoint < weakSelf.fileSize) {
+                while (weakSelf && [weakSelf.currentSearchText isEqualToString:searchText] && readByteSeekPoint < weakSelf.fileSize && weakSelf.searchResult.count < weakSelf.maxSearchResult) {
                     NSUInteger readLength = kBufferSize;
                     
                     if (readByteSeekPoint + readLength > weakSelf.fileSize) {
@@ -368,6 +371,10 @@
                                                     [weakSelf.delegate textDocument:weakSelf searchText:searchText didFoundResult:result];
                                                 }
                                             });
+                                            
+                                            if (weakSelf.searchResult.count >= weakSelf.maxSearchResult) {
+                                                break;
+                                            }
                                         } else {
                                             break;
                                         }
@@ -383,10 +390,12 @@
                             }
                         }
                         
+                        int blockIndex = readByteSeekPoint / weakSelf.blockSize;
+                        
                         dispatch_async(dispatch_get_main_queue(), ^{
                             // Call delegate did search in block text
-                            if (weakSelf.delegate && [weakSelf.delegate respondsToSelector:@selector(textDocument:didSearchInBlocTextWithKeyword:)]) {
-                                [weakSelf.delegate textDocument:weakSelf didSearchInBlocTextWithKeyword:searchText];
+                            if (weakSelf.delegate && [weakSelf.delegate respondsToSelector:@selector(textDocument:didSearchInBlockIndex:keyword:)]) {
+                                [weakSelf.delegate textDocument:weakSelf didSearchInBlockIndex:blockIndex keyword:searchText];
                             }
                         });
                         

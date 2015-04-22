@@ -42,6 +42,9 @@
     if (self.searchButton.selected) {
         [self.document cancelSearch];
         self.searchButton.selected = NO;
+        
+        // Refresh content
+        [self.textView refreshContent];
     } else {
         [self.document startSeachWithText:@"java"];
     }
@@ -53,10 +56,13 @@
     self.searchButton.selected = YES;
 }
 
-- (void)textDocument:(TextDocument *)document didSearchInBlocTextWithKeyword:(NSString *)keyword {
+- (void)textDocument:(TextDocument *)document didSearchInBlockIndex:(int)blockIndex keyword:(NSString *)keyword {
     // Should update result count
     NSUInteger count = [document.searchResult count];
-    self.searchResultCount.text = [NSString stringWithFormat:@"Found %d items", count];
+    self.searchResultCount.text = [NSString stringWithFormat:count >= self.document.maxSearchResult ? @"Found %d+ items" : @"Found %d items", count];
+    
+    // Refresh content
+    [self.textView refreshContentAtBlockIndex:blockIndex];
 }
 
 - (void)textDocument:(TextDocument *)document finishedSearchText:(NSString *)keyword {

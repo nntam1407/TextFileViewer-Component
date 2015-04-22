@@ -27,7 +27,7 @@
 
 - (void)textDocument:(TextDocument *)document beginSearchText:(NSString *)keyword;
 - (void)textDocument:(TextDocument *)document searchText:(NSString *)keyword didFoundResult:(TextSearchResult *)result;
-- (void)textDocument:(TextDocument *)document didSearchInBlocTextWithKeyword:(NSString *)keyword;
+- (void)textDocument:(TextDocument *)document didSearchInBlockIndex:(int)blockIndex keyword:(NSString *)keyword;
 - (void)textDocument:(TextDocument *)document finishedSearchText:(NSString *)keyword;
 - (void)textDocument:(TextDocument *)document searchText:(NSString *)keyword failedWithError:(NSError *)error;
 
@@ -54,6 +54,7 @@
 
 /* Properties for search */
 @property (readonly, nonatomic) BOOL isSearching;
+@property (assign, nonatomic) NSUInteger maxSearchResult;
 @property (readonly, nonatomic) NSMutableArray *searchResult;
 
 - (instancetype)initWithFilePath:(NSString *)filePath;

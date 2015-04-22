@@ -10,6 +10,7 @@
  =============================================================================*/
 #import "TextFileView.h"
 #import "TextBlock.h"
+#import "TextSearchResult.h"
 /*============================================================================
  PRIVATE MACRO
  =============================================================================*/
@@ -99,6 +100,14 @@
     return resultString;
 }
 
+- (void)removeAllDisplayText {
+    self.attributedText = nil;
+    [self setNeedsLayout];
+    
+    // Remove all object text block
+    [self.textBlocks removeAllObjects];
+}
+
 #pragma mark - Methods
 
 - (void)beginRenderDocument:(TextDocument *)document {
@@ -114,6 +123,82 @@
     firstBlock.displayRect = CGRectMake(0, self.contentInset.top, self.bounds.size.width, self.contentSize.height);
     firstBlock.blockIndex = 0;
     [self.textBlocks addObject:firstBlock];
+}
+
+- (void)refreshContent {
+    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] init];
+    
+    for (TextBlock *block in self.textBlocks) {
+        NSAttributedString *blockText = [self.document readTextAtBlockIndex:block.blockIndex hightlightSearch:YES];
+        
+        block.text = blockText;
+        [text appendAttributedString:blockText];
+    }
+    
+    // Update new text
+    self.attributedText = text;
+    [self setNeedsLayout];
+}
+
+- (void)refreshContentAtBlockIndex:(int)blockIndex {
+    BOOL isDisplayingBlockIndex = NO;
+    
+    for (TextBlock *block in self.textBlocks) {
+        if (block.blockIndex == blockIndex) {
+            isDisplayingBlockIndex = YES;
+            break;
+        }
+    }
+    
+    if (isDisplayingBlockIndex) {
+        NSMutableAttributedString *text = [[NSMutableAttributedString alloc] init];
+        
+        for (TextBlock *block in self.textBlocks) {
+            NSAttributedString *blockText = [self.document readTextAtBlockIndex:block.blockIndex hightlightSearch:YES];
+            
+            block.text = blockText;
+            [text appendAttributedString:blockText];
+        }
+        
+        // Update new text
+        self.attributedText = text;
+        [self setNeedsLayout];
+    }
+}
+
+- (void)gotoSearchResult:(TextSearchResult *)searchResult {
+    if (searchResult) {
+        int blockIndex = searchResult.dataRange.location / self.document.blockSize;
+        
+        // Should remove all currently text
+        BOOL isDisplayingBlock = NO;
+        
+        for (TextBlock *block in self.textBlocks) {
+            if (block.blockIndex == isDisplayingBlock) {
+                isDisplayingBlock = YES;
+                break;
+            }
+        }
+        
+        // Should display this block and scroll to focus text
+        if (!isDisplayingBlock) {
+            // Should remove all block is displaying
+            [self removeAllDisplayText];
+            
+            NSAttributedString *blockText = [self.document readTextAtBlockIndex:blockIndex hightlightSearch:YES];
+            self.attributedText = blockText;
+            [self layoutIfNeeded];
+            
+            TextBlock *firstBlock = [[TextBlock alloc] init];
+            firstBlock.text = blockText;
+            firstBlock.displayRect = CGRectMake(0, self.contentInset.top, self.bounds.size.width, self.contentSize.height);
+            firstBlock.blockIndex = blockIndex;
+            [self.textBlocks addObject:firstBlock];
+        }
+        
+        // Should find range of this text, then scroll to that
+        
+    }
 }
 
 #pragma mark - UITextVie's delegates
