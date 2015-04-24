@@ -10,7 +10,9 @@
 #import "TextDocument.h"
 #import "TextFileView.h"
 
-@interface ViewController () <UITextFieldDelegate, UIScrollViewDelegate, TextDocumentDelegates>
+#import <MobileCoreServices/MobileCoreServices.h> // For UTI
+
+@interface ViewController () <UITextFieldDelegate, UIScrollViewDelegate, TextDocumentDelegates, UIDocumentInteractionControllerDelegate>
 
 @property (strong, nonatomic) TextDocument *document;
 @property (weak, nonatomic) IBOutlet TextFileView *textView;
@@ -18,6 +20,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *searchResultCount;
 
 @property (assign, nonatomic) NSInteger currentSearchIndex;
+
+@property (strong, nonatomic) UIDocumentInteractionController *docController;
 
 @end
 
@@ -67,12 +71,76 @@
 }
 
 - (IBAction)didTouchNextResult:(id)sender {
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"xlsx"];
+    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+    
+    _docController = [UIDocumentInteractionController interactionControllerWithURL:fileURL];
+    self.docController.delegate = self;
+    self.docController.UTI = [self UTIForURL:fileURL];
+    
+    [self.docController presentOpenInMenuFromRect:CGRectZero inView:self.view animated:YES];
+    
+//    UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL fileURLWithPath:filePath]] applicationActivities:nil];
+//    
+////    NSArray *excludedActivities = @[UIActivityTypePostToTwitter, UIActivityTypePostToFacebook,
+////                                    UIActivityTypePostToWeibo,
+////                                    UIActivityTypeMessage, UIActivityTypeMail,
+////                                    UIActivityTypeCopyToPasteboard,
+////                                    UIActivityTypeAssignToContact,
+////                                    UIActivityTypeAddToReadingList, UIActivityTypePostToFlickr,
+////                                    UIActivityTypePostToVimeo, UIActivityTypePostToTencentWeibo];
+////    activityViewController.excludedActivityTypes = excludedActivities;
+//    
+//    [self presentViewController:activityViewController animated:YES completion:^{
+//        
+//    }];
+    
     self.currentSearchIndex++;
     
     if (self.currentSearchIndex < self.document.searchResult.count && self.document.searchResult.count > 0) {
         TextSearchResult *result = self.document.searchResult[self.currentSearchIndex];
         [self.textView gotoSearchResult:result animated:YES];
     }
+}
+
+#pragma mark - UIDocumentInteractionControllerDelegate
+
+- (void) documentInteractionControllerWillPresentOpenInMenu:(UIDocumentInteractionController *)controller
+{
+    // Inform delegate
+//    if([self.delegate respondsToSelector:@selector(openInAppActivityWillPresentDocumentInteractionController:)]) {
+//        [self.delegate openInAppActivityWillPresentDocumentInteractionController:self];
+//    }
+}
+
+- (void) documentInteractionControllerDidDismissOpenInMenu: (UIDocumentInteractionController *) controller
+{
+    // Inform delegate
+//    if([self.delegate respondsToSelector:@selector(openInAppActivityDidDismissDocumentInteractionController:)]) {
+//        [self.delegate openInAppActivityDidDismissDocumentInteractionController:self];
+//    }
+}
+
+- (void) documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(NSString *)application
+{
+    // Inform delegate
+//    if([self.delegate respondsToSelector:@selector(openInAppActivityDidEndSendingToApplication:)]) {
+//        [self.delegate openInAppActivityDidDismissDocumentInteractionController:self];
+//    }
+//    if ([self.delegate respondsToSelector:@selector(openInAppActivityDidSendToApplication:)]) {
+//        [self.delegate openInAppActivityDidSendToApplication:application];
+//    }
+//    
+//    // Inform app that the activity has finished
+//    [self activityDidFinish:YES];
+}
+
+#pragma mark - Support methods
+
+- (NSString *)UTIForURL:(NSURL *)url
+{
+    CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef)url.pathExtension, NULL);
+    return (NSString *)CFBridgingRelease(UTI) ;
 }
 
 #pragma mark - TextDocument's delegates

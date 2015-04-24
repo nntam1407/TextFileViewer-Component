@@ -10,6 +10,9 @@
 		1045896A1AE0C09600A1D251 /* TextFileView.m in Sources */ = {isa = PBXBuildFile; fileRef = 104589691AE0C09600A1D251 /* TextFileView.m */; };
 		1045896D1AE0CE3600A1D251 /* TextBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 1045896C1AE0CE3600A1D251 /* TextBlock.m */; };
 		10ADB9641AE2523300B11994 /* TextSearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 10ADB9631AE2523300B11994 /* TextSearchResult.m */; };
+		10BC33C71AE8E9DB00A4B39D /* IMG_1078.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 10BC33C61AE8E9DB00A4B39D /* IMG_1078.jpg */; };
+		10BC33C91AE8E9E900A4B39D /* Reader.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 10BC33C81AE8E9E900A4B39D /* Reader.pdf */; };
+		10BC33CB1AE8EAEC00A4B39D /* test.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = 10BC33CA1AE8EA8D00A4B39D /* test.xlsx */; };
 		10F1B3001AE0F84F003B1B13 /* test.txt in Resources */ = {isa = PBXBuildFile; fileRef = 10F1B2FF1AE0F84F003B1B13 /* test.txt */; };
 		10F1B3061AE105E1003B1B13 /* FTCoreTextStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 10F1B3031AE105E1003B1B13 /* FTCoreTextStyle.m */; };
 		10F1B3071AE105E1003B1B13 /* FTCoreTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 10F1B3051AE105E1003B1B13 /* FTCoreTextView.m */; };
@@ -41,6 +44,9 @@
 		1045896C1AE0CE3600A1D251 /* TextBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextBlock.m; sourceTree = "<group>"; };
 		10ADB9621AE2523300B11994 /* TextSearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextSearchResult.h; sourceTree = "<group>"; };
 		10ADB9631AE2523300B11994 /* TextSearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextSearchResult.m; sourceTree = "<group>"; };
+		10BC33C61AE8E9DB00A4B39D /* IMG_1078.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = IMG_1078.jpg; sourceTree = "<group>"; };
+		10BC33C81AE8E9E900A4B39D /* Reader.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Reader.pdf; sourceTree = "<group>"; };
+		10BC33CA1AE8EA8D00A4B39D /* test.xlsx */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.xlsx; sourceTree = "<group>"; };
 		10F1B2FF1AE0F84F003B1B13 /* test.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.txt; sourceTree = "<group>"; };
 		10F1B3021AE105E1003B1B13 /* FTCoreTextStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTCoreTextStyle.h; sourceTree = "<group>"; };
 		10F1B3031AE105E1003B1B13 /* FTCoreTextStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTCoreTextStyle.m; sourceTree = "<group>"; };
@@ -117,6 +123,9 @@
 				10F1B3011AE105E1003B1B13 /* FTCoreTextView */,
 				10FC5D8D1ADFB9650022FAA6 /* log.txt */,
 				10F1B2FF1AE0F84F003B1B13 /* test.txt */,
+				10BC33C61AE8E9DB00A4B39D /* IMG_1078.jpg */,
+				10BC33C81AE8E9E900A4B39D /* Reader.pdf */,
+				10BC33CA1AE8EA8D00A4B39D /* test.xlsx */,
 				10F9DA341ADF92C600F73F7A /* AppDelegate.h */,
 				10F9DA351ADF92C600F73F7A /* AppDelegate.m */,
 				10F9DA371ADF92C600F73F7A /* ViewController.h */,
@@ -243,10 +252,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				10BC33C91AE8E9E900A4B39D /* Reader.pdf in Resources */,
 				10F9DA3C1ADF92C600F73F7A /* Main.storyboard in Resources */,
+				10BC33C71AE8E9DB00A4B39D /* IMG_1078.jpg in Resources */,
 				10F9DA411ADF92C600F73F7A /* LaunchScreen.xib in Resources */,
 				10F9DA3E1ADF92C600F73F7A /* Images.xcassets in Resources */,
 				10FC5D8E1ADFB9650022FAA6 /* log.txt in Resources */,
+				10BC33CB1AE8EAEC00A4B39D /* test.xlsx in Resources */,
 				10F1B3001AE0F84F003B1B13 /* test.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
